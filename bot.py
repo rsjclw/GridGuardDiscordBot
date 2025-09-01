@@ -37,10 +37,10 @@ async def hello(ctx, *, message: str = None):
 @bot.tree.command(name="register_grid", description="Register a new grid with the specified ID")
 async def register_grid(interaction: Interaction):
     """Register a new grid with the specified ID"""
-    grid_id = interaction.channel.id
+    grid_id = interaction.channel.name
     payload = {
         "grid_id": str(grid_id),
-        "channel_name": interaction.channel.name,
+        "discord_channel_id": interaction.channel.id,
         "guild_id": str(interaction.guild.id) if interaction.guild else None,
         "guild_name": interaction.guild.name if interaction.guild else None
     }
@@ -48,7 +48,7 @@ async def register_grid(interaction: Interaction):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"{backend_url}/grid/register",
+                f"{backend_url}/register",
                 json=payload,
                 timeout=5
             )
