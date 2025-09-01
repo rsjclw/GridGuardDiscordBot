@@ -40,4 +40,4 @@ async def lifespan(app: FastAPI):
 app.router.lifespan_context = lifespan
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=HOST, port=PORT)
+    uvicorn.run("main:app", host=HOST, port=PORT, lifespan="on", reload=True)
