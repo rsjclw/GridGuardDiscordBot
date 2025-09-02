@@ -60,9 +60,10 @@ async def register_grid(interaction: Interaction):
                     ephemeral=False
                 )
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to register grid {grid_id}: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to register grid. Please try again later.",
+                    f"❌ Failed to register grid. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
@@ -134,9 +135,10 @@ async def register_pond(
                 
                 await interaction.response.send_message(embed=embed, ephemeral=False)
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to register pond: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to register pond. Please try again later.",
+                    f"❌ Failed to register pond. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
@@ -177,9 +179,10 @@ async def pond_water_level_adjust(interaction: Interaction, height: float):
                 
                 await interaction.response.send_message(embed=embed, ephemeral=False)
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to adjust pond water level: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to adjust pond water level. Please try again later.",
+                    f"❌ Failed to adjust pond water level. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
@@ -220,9 +223,10 @@ async def reservoir_water_level_adjust(interaction: Interaction, height: float):
                 
                 await interaction.response.send_message(embed=embed, ephemeral=False)
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to adjust reservoir water level: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to adjust reservoir water level. Please try again later.",
+                    f"❌ Failed to adjust reservoir water level. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
@@ -233,11 +237,13 @@ async def reservoir_water_level_adjust(interaction: Interaction, height: float):
         )
 
 @bot.tree.command(name="disinfection", description="Trigger disinfection for the reservoir")
-async def disinfection(interaction: Interaction):
+@app_commands.describe(water_height="Water height for the reservoir (in centimeters)")
+async def disinfection(interaction: Interaction, water_height: float):
     """Trigger disinfection for the reservoir"""
     payload = {
         "pond_name": str(interaction.channel.name),
-        "disinfection_type": "reservoir"
+        "disinfection_type": "reservoir",
+        "water_height": water_height
     }
     try:
         async with httpx.AsyncClient() as client:
@@ -257,9 +263,10 @@ async def disinfection(interaction: Interaction):
                 )
                 await interaction.response.send_message(embed=embed, ephemeral=False)
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to trigger reservoir disinfection: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to start reservoir disinfection. Please try again later.",
+                    f"❌ Failed to start reservoir disinfection. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
@@ -270,11 +277,13 @@ async def disinfection(interaction: Interaction):
         )
 
 @bot.tree.command(name="disinfection_pond", description="Trigger disinfection for the pond")
-async def disinfection_pond(interaction: Interaction):
+@app_commands.describe(water_height="Water height for the pond (in centimeters)")
+async def disinfection_pond(interaction: Interaction, water_height: float):
     """Trigger disinfection for the pond"""
     payload = {
         "pond_name": str(interaction.channel.name),
-        "disinfection_type": "pond"
+        "disinfection_type": "pond",
+        "water_height": water_height
     }
     
     try:
@@ -295,9 +304,10 @@ async def disinfection_pond(interaction: Interaction):
                 )
                 await interaction.response.send_message(embed=embed, ephemeral=False)
             else:
+                error_detail = response.json().get('detail', 'No details provided')
                 logger.error(f"Failed to trigger pond disinfection: {response.text}")
                 await interaction.response.send_message(
-                    "❌ Failed to start pond disinfection. Please try again later.",
+                    f"❌ Failed to start pond disinfection. Error: {error_detail}",
                     ephemeral=True
                 )
     except Exception as e:
